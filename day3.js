@@ -86,17 +86,21 @@ const parseWires = (wires) => {
 
 const findCrossoverDistances = (wires) => {
   let smallestDistance = Number.MAX_VALUE;
+  let minimumSteps = Number.MAX_VALUE;
 
-  wires[0].forEach((pos1) => {
-    wires[1].forEach((pos2) => {
+  wires[0].forEach((pos1, i) => {
+    wires[1].forEach((pos2, j) => {
       if (pos1[0] === pos2[0] && pos1[1] === pos2[1]) {
         const distance = Math.abs(pos1[0]) + Math.abs(pos1[1]);
         smallestDistance = Math.min(distance, smallestDistance);
+        const steps = i + j + 2; // Add 2 because we removed the original [0,0] point
+        minimumSteps = Math.min(steps, minimumSteps);
       }
     })
   })
 
-  console.log(smallestDistance);
+  console.log('smallestDistance', smallestDistance);
+  console.log('minimumSteps', minimumSteps);
 }
 
 buildWires()
