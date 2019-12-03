@@ -13,7 +13,7 @@ const getRecursiveFuel = (mass) => {
   }
 }
 
-fs.createReadStream('day1.csv')
+fs.createReadStream('data/day1.csv')
   .pipe(csv())
   .on('data', (row) => {
     console.log(row);
