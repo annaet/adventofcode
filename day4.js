@@ -21,16 +21,39 @@ const inputEnd = 905157;
 
 const convertToDigits = (password) => password.toString().split('').map(Number);
 
-const hasAdjacentDigits = (digits) => {
+const hasAdjacentDigitsPart1 = (digits) => {
   let foundAdjacentDigit = false;
 
   for (let i = 0; i < digits.length - 1 && !foundAdjacentDigit; ++i) {
     const first = digits[i];
     const second = digits[i + 1];
     foundAdjacentDigit = foundAdjacentDigit || first === second;
+    adjacentDigit = first;
   }
 
   return foundAdjacentDigit;
+}
+
+const hasAdjacentDigitsPart2 = (digits) => {
+  let foundAcceptableAdjacentDigits = false;
+  let adjacentDigits = [];
+
+  for (let i = 0; i < digits.length - 1; ++i) {
+    const first = digits[i];
+    const second = digits[i + 1];
+
+    if (first === second) {
+      adjacentDigits.push(first);
+    }
+  }
+
+  for (let i = 0; i < adjacentDigits.length && !foundAcceptableAdjacentDigits; ++i) {
+    const digit = adjacentDigits[i];
+    const matches = digits.filter((d) => d === digit).length;
+    foundAcceptableAdjacentDigits = foundAcceptableAdjacentDigits || matches === 2;
+  }
+
+  return foundAcceptableAdjacentDigits;
 }
 
 const hasNoDecreasingDigits = (digits) => {
@@ -56,7 +79,7 @@ const findPasswords = () => {
 
   for (let i = inputStart; i < inputEnd; ++i) {
     const digits = convertToDigits(i);
-    if (hasAdjacentDigits(digits) && hasNoDecreasingDigits(digits)) {
+    if (hasAdjacentDigitsPart2(digits) && hasNoDecreasingDigits(digits)) {
       count++;
     }
   }
