@@ -1,3 +1,5 @@
+const helpers = require('./utils/helpers');
+
 // --- Day 4: Secure Container ---
 // You arrive at the Venus fuel depot only to discover it's protected by a password. The Elves had written the password on a sticky note, but someone threw it out.
 
@@ -18,8 +20,6 @@
 
 const inputStart = 372037;
 const inputEnd = 905157;
-
-const convertToDigits = (password) => password.toString().split('').map(Number);
 
 const hasAdjacentDigitsPart1 = (digits) => {
   let foundAdjacentDigit = false;
@@ -78,7 +78,7 @@ const findPasswords = () => {
   let count = 0;
 
   for (let i = inputStart; i < inputEnd; ++i) {
-    const digits = convertToDigits(i);
+    const digits = helpers.convertToDigits(i);
     if (hasAdjacentDigitsPart2(digits) && hasNoDecreasingDigits(digits)) {
       count++;
     }

@@ -1,51 +1,108 @@
-const runComputer = (noun, verb) => {
-  const input = [1,0,0,3,1,1,2,3,1,3,4,3,1,5,0,3,2,10,1,19,1,19,9,23,1,23,13,27,1,10,27,31,2,31,13,35,1,10,35,39,2,9,39,43,2,43,9,47,1,6,47,51,1,10,51,55,2,55,13,59,1,59,10,63,2,63,13,67,2,67,9,71,1,6,71,75,2,75,9,79,1,79,5,83,2,83,13,87,1,9,87,91,1,13,91,95,1,2,95,99,1,99,6,0,99,2,14,0,0];
+const helpers = require('./helpers');
+const json = require('../data/day5.json');
 
-  input[1] = noun;
-  input[2] = verb;
+const parseInstruction = (instruction) => {
+  const digits = helpers.convertToDigits(instruction);
+  const l = digits.length;
+
+  const opcode = Number('' + (digits[l - 2] || 0) + digits[l - 1]);
+  const param1 = digits[l - 3] || 0;
+  const param2 = digits[l - 4] || 0;
+  const param3 = digits[l - 5] || 0;
+
+  return [opcode, param1, param2, param3];
+}
+
+const isPositionMode = (mode) => mode === 0;
+const isImmediateMode = (mode) => mode === 1;
+
+const getParameter = (i, mode, program) => {
+  let param = program[i];
+
+  if (isPositionMode(mode)) {
+    param = program[param];
+  }
+
+  return param;
+}
+
+const runComputer = (noun, verb, input) => {
+  const program = JSON.parse(JSON.stringify(json));
+  // console.log(program);
+
+  if (noun) {
+    program[1] = noun;
+  }
+
+  if (verb) {
+    program[2] = verb;
+  }
 
   let i = 0;
   let stop = false;
 
-  let pos1;
-  let pos2;
+  let param1;
+  let param2;
+  let param3;
   let result;
-  let resultPos;
 
   while (!stop) {
-    const opcode = input[i];
+    const instruction = program[i];
+    // console.log('\ninstruction:', instruction);
+    const parsedInstruction = parseInstruction(instruction);
+
+    // console.log(parsedInstruction);
+
+    const opcode = parsedInstruction[0];
+    const mode1 = parsedInstruction[1];
+    const mode2 = parsedInstruction[2];
+    // const mode3 = parsedInstruction[3];
+
+    param1 = getParameter(i + 1, mode1, program);
+    param2 = getParameter(i + 2, mode2, program);
+    // param3 = getParameter(i + 3, mode3, program);
 
     switch (opcode) {
       case 1:
         // add
-        pos1 = input[i + 1];
-        pos2 = input[i + 2]
-        result = input[pos1] + input[pos2];
-        resultPos = input[i + 3];
-        input[resultPos] = result;
+        result = param1 + param2;
+        resultPos = program[i + 3];
+        program[resultPos] = result;
         i += 4;
         break;
       case 2:
         // multiply
-        pos1 = input[i + 1];
-        pos2 = input[i + 2]
-        result = input[pos1] * input[pos2];
-        resultPos = input[i + 3];
-        input[resultPos] = result;
+        result = param1 * param2;
+        resultPos = program[i + 3];
+        program[resultPos] = result;
         i += 4;
+        break;
+      case 3:
+        // input
+        resultPos = program[i + 1];
+        program[resultPos] = input;
+        i += 2;
+        break;
+      case 4:
+        // output
+        result = param1;
+        console.log('output', result);
+        i += 2;
         break;
       case 99:
         // stop
         stop = true;
+        console.log('halt');
         break;
       default:
-        console.log('help!')
         stop = true;
+        console.log('help!')
         break;
     }
   }
 
-  return input[0];
+  return program[0];
 }
 
 exports.run = runComputer;
+exports.parseInstruction = parseInstruction;
