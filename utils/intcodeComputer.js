@@ -33,7 +33,6 @@ const runComputer = (noun, verb, input) => {
   if (noun) {
     program[1] = noun;
   }
-
   if (verb) {
     program[2] = verb;
   }
@@ -48,19 +47,14 @@ const runComputer = (noun, verb, input) => {
 
   while (!stop) {
     const instruction = program[i];
-    // console.log('\ninstruction:', instruction);
     const parsedInstruction = parseInstruction(instruction);
-
-    // console.log(parsedInstruction);
 
     const opcode = parsedInstruction[0];
     const mode1 = parsedInstruction[1];
     const mode2 = parsedInstruction[2];
-    // const mode3 = parsedInstruction[3];
 
     param1 = getParameter(i + 1, mode1, program);
     param2 = getParameter(i + 2, mode2, program);
-    // param3 = getParameter(i + 3, mode3, program);
 
     switch (opcode) {
       case 1:
@@ -88,6 +82,30 @@ const runComputer = (noun, verb, input) => {
         result = param1;
         console.log('output', result);
         i += 2;
+        break;
+      case 5:
+        // jump-if-true
+        if (param1 !== 0) {
+          i = param2;
+        } else {
+          i += 3;
+        }
+        break;
+      case 6:
+        // jump-if-false
+        i = param1 === 0 ? param2 : i + 3;
+        break;
+      case 7:
+        // less than
+        resultPos = program[i + 3];
+        program[resultPos] = param1 < param2 ? 1 : 0;
+        i += 4;
+        break;
+      case 8:
+        // equals
+        resultPos = program[i + 3];
+        program[resultPos] = param1 === param2 ? 1 : 0;
+        i += 4;
         break;
       case 99:
         // stop
