@@ -1,5 +1,4 @@
 const helpers = require('./helpers');
-const json = require('../data/day5.json');
 
 const parseInstruction = (instruction) => {
   const digits = helpers.convertToDigits(instruction);
@@ -26,9 +25,9 @@ const getParameter = (i, mode, program) => {
   return param;
 }
 
-const runComputer = (noun, verb, input) => {
-  const program = JSON.parse(JSON.stringify(json));
-  // console.log(program);
+const runComputer = (noun, verb, inputs, data) => {
+  const program = helpers.copyArray(data);
+  console.log(program);
 
   if (noun) {
     program[1] = noun;
@@ -38,12 +37,13 @@ const runComputer = (noun, verb, input) => {
   }
 
   let i = 0;
+  let inputCounter = 0;
   let stop = false;
 
   let param1;
   let param2;
-  let param3;
   let result;
+  let output;
 
   while (!stop) {
     const instruction = program[i];
@@ -62,6 +62,11 @@ const runComputer = (noun, verb, input) => {
         result = param1 + param2;
         resultPos = program[i + 3];
         program[resultPos] = result;
+        if (Number.isNaN(result)) {
+          console.log(param1, param2, resultPos, result);
+          stop = true;
+        }
+        // console.log('add', result);
         i += 4;
         break;
       case 2:
@@ -69,18 +74,22 @@ const runComputer = (noun, verb, input) => {
         result = param1 * param2;
         resultPos = program[i + 3];
         program[resultPos] = result;
+        if (Number.isNaN(result)) {
+          console.log(param1, param2, resultPos, result);
+          stop = true;
+        }
         i += 4;
         break;
       case 3:
         // input
         resultPos = program[i + 1];
-        program[resultPos] = input;
+        program[resultPos] = inputs[inputCounter++];
         i += 2;
         break;
       case 4:
         // output
-        result = param1;
-        console.log('output', result);
+        output = param1;
+        console.log('output', output);
         i += 2;
         break;
       case 5:
@@ -119,7 +128,7 @@ const runComputer = (noun, verb, input) => {
     }
   }
 
-  return program[0];
+  return {output, stop};
 }
 
 exports.run = runComputer;
