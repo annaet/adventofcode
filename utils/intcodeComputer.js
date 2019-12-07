@@ -25,19 +25,8 @@ const getParameter = (i, mode, program) => {
   return param;
 }
 
-const runComputer = (noun, verb, inputs, data) => {
-  const program = helpers.copyArray(data);
-  console.log(program);
-
-  if (noun) {
-    program[1] = noun;
-  }
-  if (verb) {
-    program[2] = verb;
-  }
-
-  let i = 0;
-  let inputCounter = 0;
+const runComputer = (amplifier) => {
+  let program = amplifier.program;
   let stop = false;
 
   let param1;
@@ -45,81 +34,70 @@ const runComputer = (noun, verb, inputs, data) => {
   let result;
   let output;
 
-  while (!stop) {
-    const instruction = program[i];
+  while (!stop && typeof output === 'undefined') {
+    const instruction = program[amplifier.pointer];
     const parsedInstruction = parseInstruction(instruction);
 
     const opcode = parsedInstruction[0];
     const mode1 = parsedInstruction[1];
     const mode2 = parsedInstruction[2];
 
-    param1 = getParameter(i + 1, mode1, program);
-    param2 = getParameter(i + 2, mode2, program);
+    param1 = getParameter(amplifier.pointer + 1, mode1, program);
+    param2 = getParameter(amplifier.pointer + 2, mode2, program);
 
     switch (opcode) {
       case 1:
         // add
         result = param1 + param2;
-        resultPos = program[i + 3];
+        resultPos = program[amplifier.pointer + 3];
         program[resultPos] = result;
-        if (Number.isNaN(result)) {
-          console.log(param1, param2, resultPos, result);
-          stop = true;
-        }
-        // console.log('add', result);
-        i += 4;
+        amplifier.pointer += 4;
         break;
       case 2:
         // multiply
         result = param1 * param2;
-        resultPos = program[i + 3];
+        resultPos = program[amplifier.pointer + 3];
         program[resultPos] = result;
-        if (Number.isNaN(result)) {
-          console.log(param1, param2, resultPos, result);
-          stop = true;
-        }
-        i += 4;
+        amplifier.pointer += 4;
         break;
       case 3:
         // input
-        resultPos = program[i + 1];
-        program[resultPos] = inputs[inputCounter++];
-        i += 2;
+        resultPos = program[amplifier.pointer + 1];
+        program[resultPos] = amplifier.inputs.shift();
+        amplifier.pointer += 2;
         break;
       case 4:
         // output
         output = param1;
-        console.log('output', output);
-        i += 2;
+        amplifier.pointer += 2;
         break;
       case 5:
         // jump-if-true
         if (param1 !== 0) {
-          i = param2;
+          amplifier.pointer = param2;
         } else {
-          i += 3;
+          amplifier.pointer += 3;
         }
         break;
       case 6:
         // jump-if-false
-        i = param1 === 0 ? param2 : i + 3;
+        amplifier.pointer = param1 === 0 ? param2 : amplifier.pointer + 3;
         break;
       case 7:
         // less than
-        resultPos = program[i + 3];
+        resultPos = program[amplifier.pointer + 3];
         program[resultPos] = param1 < param2 ? 1 : 0;
-        i += 4;
+        amplifier.pointer += 4;
         break;
       case 8:
         // equals
-        resultPos = program[i + 3];
+        resultPos = program[amplifier.pointer + 3];
         program[resultPos] = param1 === param2 ? 1 : 0;
-        i += 4;
+        amplifier.pointer += 4;
         break;
       case 99:
         // stop
         stop = true;
-        console.log('halt');
         break;
       default:
         stop = true;
