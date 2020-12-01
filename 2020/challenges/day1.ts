@@ -1,5 +1,3 @@
-#!/usr/bin/env ts-node-script
-
 /**
 --- Day 1: Report Repair ---
 After saving Christmas five years in a row, you've decided to take a vacation at a nice resort on a tropical island. Surely, Christmas will go on without you.
@@ -25,30 +23,72 @@ For example, suppose your expense report contained the following:
 In this list, the two entries that sum to 2020 are 1721 and 299. Multiplying them together produces 1721 * 299 = 514579, so the correct answer is 514579.
 
 Of course, your expense report is much larger. Find the two entries that sum to 2020; what do you get if you multiply them together?
- */
+*/
 
 const csv = require('csv-parser');
 const fs = require('fs');
 const util = require('util');
 
-const results: number[] = [];
-let lastResult: number;
+const readSingleColumnCSV = (file: string): Promise<number[]> => {
+  const results: number[] = [];
 
-fs.createReadStream(`${__dirname}/../input/day1.csv`)
-  .pipe(csv({
-    headers: false,
-  }))
-  .on('data', (data: any) => {
-    results.push(parseInt(data[0], 10));
-  })
-  .on('end', () => {
-    for (let i = 0; i < results.length; ++i) {
-      for (let j = i + 1; j < results.length; ++j) {
+  return new Promise((resolve, reject) => {
+    fs.createReadStream(file)
+    .pipe(csv({
+      headers: false,
+    }))
+    .on('data', (data: any) => {
+      results.push(parseInt(data[0], 10));
+    })
+    .on('end', () => {
+      resolve(results);
+    })
+    .on('error', (err: any) => {
+      reject(err);
+    })
+  });
+}
+
+const part1 = async () => {
+  let results = await readSingleColumnCSV(`${__dirname}/../input/day1.csv`);
+
+  for (let i = 0; i < results.length; ++i) {
+    for (let j = i + 1; j < results.length; ++j) {
+      const firstEntry = results[i];
+      const secondEntry = results[j];
+      if (firstEntry + secondEntry === 2020) {
+        return firstEntry * secondEntry;
+      }
+    }
+  }
+}
+
+part1().then(console.log);
+
+/**
+--- Part Two ---
+The Elves in accounting are thankful for your help; one of them even offers you a starfish coin they had left over from a past vacation. They offer you a second one if you can find three numbers in your expense report that meet the same criteria.
+
+Using the above example again, the three entries that sum to 2020 are 979, 366, and 675. Multiplying them together produces the answer, 241861950.
+
+In your expense report, what is the product of the three entries that sum to 2020?
+*/
+
+const part2 = async () => {
+  let results = await readSingleColumnCSV(`${__dirname}/../input/day1.csv`);
+
+  for (let i = 0; i < results.length; ++i) {
+    for (let j = i + 1; j < results.length; ++j) {
+      for (let k = i + 1; k < results.length; ++k) {
         const firstEntry = results[i];
         const secondEntry = results[j];
-        if (firstEntry + secondEntry === 2020) {
-          console.log(firstEntry * secondEntry);
+        const thirdEntry = results[k];
+        if (firstEntry + secondEntry + thirdEntry === 2020) {
+          return firstEntry * secondEntry * thirdEntry;
         }
       }
     }
-  });
+  }
+}
+
+part2().then(console.log);
