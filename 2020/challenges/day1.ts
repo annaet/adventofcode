@@ -25,29 +25,7 @@ In this list, the two entries that sum to 2020 are 1721 and 299. Multiplying the
 Of course, your expense report is much larger. Find the two entries that sum to 2020; what do you get if you multiply them together?
 */
 
-const csv = require('csv-parser');
-const fs = require('fs');
-const util = require('util');
-
-const readSingleColumnCSV = (file: string): Promise<number[]> => {
-  const results: number[] = [];
-
-  return new Promise((resolve, reject) => {
-    fs.createReadStream(file)
-    .pipe(csv({
-      headers: false,
-    }))
-    .on('data', (data: any) => {
-      results.push(parseInt(data[0], 10));
-    })
-    .on('end', () => {
-      resolve(results);
-    })
-    .on('error', (err: any) => {
-      reject(err);
-    })
-  });
-}
+import { readSingleColumnCSV } from '../utils/csv';
 
 const part1 = async () => {
   let results = await readSingleColumnCSV(`${__dirname}/../input/day1.csv`);
@@ -63,7 +41,7 @@ const part1 = async () => {
   }
 }
 
-part1().then(console.log);
+part1().then((result) => console.log(`Part 1: ${result}`));
 
 /**
 --- Part Two ---
@@ -91,4 +69,4 @@ const part2 = async () => {
   }
 }
 
-part2().then(console.log);
+part2().then((result) => console.log(`Part 2: ${result}`));
