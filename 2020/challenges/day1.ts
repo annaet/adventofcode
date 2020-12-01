@@ -27,21 +27,33 @@ Of course, your expense report is much larger. Find the two entries that sum to 
 
 import { readSingleColumnCSV } from '../utils/csv';
 
-const part1 = async () => {
-  let results = await readSingleColumnCSV(`${__dirname}/../input/day1.csv`);
+const multiplyMatchingEntries = (entries: number[], maxNumResults: number, results: number[]): number => {
+  for (let i = 0; i < entries.length; ++i) {
+    const entry = entries[i];
 
-  for (let i = 0; i < results.length; ++i) {
-    for (let j = i + 1; j < results.length; ++j) {
-      const firstEntry = results[i];
-      const secondEntry = results[j];
-      if (firstEntry + secondEntry === 2020) {
-        return firstEntry * secondEntry;
+    if (results.length === maxNumResults) {
+      const additionResult = results.reduce((prev, cur) => prev + cur, 0);
+      if (additionResult === 2020) {
+        return results.reduce((prev, cur) => prev * cur, 1);
+      }
+    } else {
+      const remainingEntries = [...entries].slice(i + 1);
+      const r = multiplyMatchingEntries(remainingEntries, maxNumResults, [...results, entry]);
+      if (r !== -1) {
+        return r;
       }
     }
   }
+
+  return -1;
 }
 
-part1().then((result) => console.log(`Part 1: ${result}`));
+const part1 = async (file: string) => {
+  let entries = await readSingleColumnCSV(file);
+  return multiplyMatchingEntries(entries, 2, []);
+}
+
+// part1(`${__dirname}/../input/day1.csv`).then((result) => console.log(`Part 1: ${result}`));
 
 /**
 --- Part Two ---
@@ -52,21 +64,14 @@ Using the above example again, the three entries that sum to 2020 are 979, 366, 
 In your expense report, what is the product of the three entries that sum to 2020?
 */
 
-const part2 = async () => {
-  let results = await readSingleColumnCSV(`${__dirname}/../input/day1.csv`);
-
-  for (let i = 0; i < results.length; ++i) {
-    for (let j = i + 1; j < results.length; ++j) {
-      for (let k = i + 1; k < results.length; ++k) {
-        const firstEntry = results[i];
-        const secondEntry = results[j];
-        const thirdEntry = results[k];
-        if (firstEntry + secondEntry + thirdEntry === 2020) {
-          return firstEntry * secondEntry * thirdEntry;
-        }
-      }
-    }
-  }
+const part2 = async (file: string) => {
+  let entries = await readSingleColumnCSV(file);
+  return multiplyMatchingEntries(entries, 3, []);
 }
 
-part2().then((result) => console.log(`Part 2: ${result}`));
+// part2(`${__dirname}/../input/day1.csv`).then((result) => console.log(`Part 2: ${result}`));
+
+export {
+  part1,
+  part2,
+}
