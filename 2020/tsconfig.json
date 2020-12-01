@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "ES5",
+    "module": "system",
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "strict": true,
+    "typeRoots": [],
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "challenges/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+}
