@@ -53,8 +53,6 @@ const part1 = async (file: string) => {
   return multiplyMatchingEntries(entries, 2, []);
 }
 
-// part1(`${__dirname}/../input/day1.csv`).then((result) => console.log(`Part 1: ${result}`));
-
 /**
 --- Part Two ---
 The Elves in accounting are thankful for your help; one of them even offers you a starfish coin they had left over from a past vacation. They offer you a second one if you can find three numbers in your expense report that meet the same criteria.
@@ -68,8 +66,6 @@ const part2 = async (file: string) => {
   let entries = await readSingleColumnCSV(file);
   return multiplyMatchingEntries(entries, 3, []);
 }
-
-// part2(`${__dirname}/../input/day1.csv`).then((result) => console.log(`Part 2: ${result}`));
 
 export {
   part1,
