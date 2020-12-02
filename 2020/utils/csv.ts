@@ -23,8 +23,8 @@ const readSingleColumnCSV = (file: string): Promise<number[]> => {
 
 export interface PasswordRow {
   policy: {
-    minimumCount: number;
-    maximumCount: number;
+    rulePartA: number;
+    rulePartB: number;
     requiredString: string;
   };
   password: string;
@@ -44,8 +44,8 @@ const readPasswords = (file: string): Promise<PasswordRow[]> => {
         const requiredString = data[1].split(':');
         passwords.push({
           policy: {
-            minimumCount: counts[0],
-            maximumCount: counts[1],
+            rulePartA: parseInt(counts[0], 10),
+            rulePartB: parseInt(counts[1], 10),
             requiredString: requiredString[0],
           },
           password: data[2],
