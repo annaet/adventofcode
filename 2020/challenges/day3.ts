@@ -54,37 +54,78 @@ Starting at the top-left corner of your map and following a slope of right 3 and
 
 import { readGrid } from '../utils/txt';
 
-const part1 = async (file: string): Promise<number> => {
-  const grid = await readGrid(file);
-  let position = [0, 0]; // [row, column]
+const move = (position: number[], moveRight: number, moveDown: number, grid: string[][]): number[] => {
+  // Move
+  position = [position[0] + moveDown, position[1] + moveRight];
+
+  if (!grid[position[0]][position[1]]) {
+    // Repeat grid
+    position[1] = position[1] % grid[0].length;
+  }
+
+  return position;
+};
+
+const hitTree = (position: number[], grid: string[][]): boolean => grid[position[0]][position[1]] === '#';
+
+const sled = (position: number[], moveRight: number, moveDown: number, grid: string[][]): number => {
   let targetRow = grid.length - 1;
   let trees = 0;
-  // console.log(grid);
-  // console.log('target', targetRow);
 
   while (position[0] !== targetRow) {
-    // Move
-    position = [position[0] + 1, position[1] + 3];
-    // console.log('move to: ', position);
+    position = move(position, moveRight, moveDown, grid);
 
-    if (!grid[position[0]][position[1]]) {
-      // Repeat grid
-      position[1] = position[1] % grid[0].length;
-    }
-    // console.log('pos: ', position, ' grid: ', grid[position[0]][position[1]]);
-
-    if (grid[position[0]][position[1]] === '#') {
-      // Found tree
+    if (hitTree(position, grid)) {
       trees++;
     }
   }
 
-  console.log(trees);
   return trees;
 }
 
-const part2 = async (file: string): Promise<number> => {
-  return 0;
+const part1 = (file: string): number => {
+  const grid = readGrid(file);
+  let position = [0, 0]; // [row, column]
+
+  const treesHit = sled(position, 3, 1, grid);
+  return treesHit;
+}
+
+/**
+--- Part Two ---
+Time to check the rest of the slopes - you need to minimize the probability of a sudden arboreal stop, after all.
+
+Determine the number of trees you would encounter if, for each of the following slopes, you start at the top-left corner and traverse the map all the way to the bottom:
+
+Right 1, down 1.
+Right 3, down 1. (This is the slope you already checked.)
+Right 5, down 1.
+Right 7, down 1.
+Right 1, down 2.
+In the above example, these slopes would find 2, 7, 3, 4, and 2 tree(s) respectively; multiplied together, these produce the answer 336.
+
+What do you get if you multiply together the number of trees encountered on each of the listed slopes?
+*/
+
+const part2 = (file: string): number => {
+  const grid = readGrid(file);
+  const paths = [
+    [1, 1],
+    [3, 1],
+    [5, 1],
+    [7, 1],
+    [1, 2],
+  ];
+
+  let result = 1;
+
+  paths.forEach((path) => {
+    let position = [0, 0]; // [row, column]
+    const treesHit = sled(position, path[0], path[1], grid);
+    result *= treesHit;
+  });
+
+  return result;
 }
 
 export {
