@@ -5,6 +5,7 @@
     "module": "commonjs",
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "skipLibCheck": true,

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "ts-node challenges/day1.ts",
     "test": "mocha -r ts-node/register --spec test/*.ts",
-    "test-today": "mocha -r ts-node/register --spec test/day5.ts"
+    "test-today": "mocha -r ts-node/register --spec test/day6.ts"
   },
   "author": "",
   "license": "ISC",
