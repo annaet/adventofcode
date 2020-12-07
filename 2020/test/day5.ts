@@ -7,7 +7,7 @@ import {
   part2,
 } from '../challenges/day5';
 
-describe('Day 3', () => {
+describe('Day 5', () => {
   describe('Examples', () => {
     it('Part 1', async () => {
       const result = await part1(`${__dirname}/../input/day5_example.txt`)
