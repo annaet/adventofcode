@@ -1,0 +1,21 @@
+{
+  "name": "adventofcode2021",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "ts-node day1/day1.ts",
+    "test": "jest",
+    "test-today": "jest -- test/day9.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^27.0.3",
+    "@types/node": "^16.11.11",
+    "ts-jest": "^27.0.7",
+    "ts-node": "^10.4.0"
+  },
+  "dependencies": {
+    "typescript": "^4.5.2"
+  }
+}
