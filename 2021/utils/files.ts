@@ -1,10 +1,12 @@
 import { readFile } from 'fs/promises';
 
-export const readLines = async (inputFile: string): Promise<number[]> => {
+export const readLines = async (inputFile: string): Promise<string[]> => {
   const data = await readFile(inputFile, { encoding: 'utf8' });
-  let arr = data.toString()
+  let arr: any[] = data.toString()
     .split('\n')
     .filter((value: string) => value !== '')
-    .map((n) => Number(n));
+
   return arr;
 };
+
+export const castToNumber = (input: string[]): number[] => input.map((n) => Number(n));

@@ -1,11 +1,15 @@
-import { readLines } from '../utils/files';
+import {
+  castToNumber,
+  readLines,
+} from '../utils/files';
 
 export const countIncrements = async (inputFile: string) => {
   let count = 0;
-  const arr = await readLines(inputFile);
+  const lines = await readLines(inputFile);
+  const arr = castToNumber(lines);
 
   let cur: number | undefined = undefined;
-  arr.forEach((value: number) => {
+  arr.forEach((value) => {
     if (cur && value > cur) {
       count++;
     }
@@ -17,7 +21,8 @@ export const countIncrements = async (inputFile: string) => {
 
 export const countWindowIncrements = async (inputFile: string) => {
   let count = 0;
-  const arr = await readLines(inputFile);
+  const lines = await readLines(inputFile);
+  const arr = castToNumber(lines);
 
   let cur: number | undefined = undefined;
   for (let i = 0; i < arr.length - 2; ++i) {
